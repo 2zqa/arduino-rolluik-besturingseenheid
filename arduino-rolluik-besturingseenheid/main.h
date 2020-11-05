@@ -30,6 +30,10 @@ void status();
 // Serial functies
 void process_serial();
 
+// Temperatuur functies
+void init_temperatuur();
+void send_temperature_info();
+
 // hier het aantal taken aanpassen ....!!
 // Maximum number of tasks
 

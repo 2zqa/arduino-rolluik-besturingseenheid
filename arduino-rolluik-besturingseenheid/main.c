@@ -263,33 +263,51 @@ void status() {
     PORTB ^= 0x04;
 }
 
-void stop_status() {
+void stop_rollen() {
+    PORTB = 0x00;
     SCH_Delete_Task(status_index);
 }
 
 void process_serial() {
-    uint8_t received_byte = receive_once();
-    switch (received_byte) {
-        case 0x01:
-        oprollen();
-        break;
-        case 0x02:
-        uitrollen();
-        break;
+    if(UCSR0A & (1 << RXC0)) {
+        uint8_t received_byte = UDR0;
+        switch (received_byte) {
+            case 0x01: // Uitrollen
+                oprollen();
+                break;
+            case 0x02: // Inrollen
+                uitrollen();
+                break;
+            case 0x03: // Stop met rollen
+                stop_rollen();
+                break;
+        }
     }
+    
+}
+
+void init_temperatuur() {
+    DDRC = 0x00;
+}
+
+void send_temperature_info() {
+    transmit(PINC);
 }
 
 int main()
 {
     SCH_Init_T1(); // init de timeren verwijder alle taken
     SCH_Start();   // start de scheduler
+    ADMUX = (1 << REFS0) | (1 << MUX0) | (1 << MUX2);
     
     // Eenmalige functies
     init_rolluik();
     uart_init();
+    init_temperatuur();
     
     // Herhalende functies
     SCH_Add_Task(process_serial,0,10);
+    //SCH_Add_Task(send_temperature_info,0,400);
     
     while (1) {
         SCH_Dispatch_Tasks();
