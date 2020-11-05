@@ -9,8 +9,8 @@
 sTask SCH_tasks_G[SCH_MAX_TASKS];
 
 // index van status task
-uint8_t status_index = -1;
-uint8_t previous_byte = -1;
+int8_t status_index = -1;
+int8_t previous_byte = -1;
 
 
 /*------------------------------------------------------------------*-
@@ -240,20 +240,21 @@ Stelt het lampje op groen in
 */
 void oprollen() {
     PORTB = 0x01;
-    if (status_index != -1)
+    transmit(10);
+    if (status_index == -1) // als het lampje niet al knippert, laat het knipperen
     {
-        SCH_Delete_Task(status_index);
+        transmit(20);
+        status_index = SCH_Add_Task(status,0,10);
     }
-    status_index = SCH_Add_Task(status,0,10);
 }
 
 void uitrollen() {
     PORTB = 0x02;
-    if (status_index != -1)
+    if (status_index == -1) // als het lampje niet al knippert, laat het knipperen
     {
-        SCH_Delete_Task(status_index);
+        status_index = SCH_Add_Task(status,0,10);
     }
-    status_index = SCH_Add_Task(status,0,10);
+    
 }
 
 /*
@@ -265,7 +266,11 @@ void status() {
 
 void stop_rollen() {
     PORTB = 0x00;
-    SCH_Delete_Task(status_index);
+    if (status_index != -1) // als het lampje knippert, stop het
+    {
+        SCH_Delete_Task(status_index);
+        status_index = -1;
+    }
 }
 
 void process_serial() {
