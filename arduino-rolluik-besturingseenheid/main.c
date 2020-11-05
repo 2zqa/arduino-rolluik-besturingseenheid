@@ -9,7 +9,7 @@
 sTask SCH_tasks_G[SCH_MAX_TASKS];
 
 // index van status task
-uint8_t status_index = 0;
+uint8_t status_index = -1;
 
 
 /*------------------------------------------------------------------*-
@@ -239,10 +239,19 @@ void init_rolluik() {
 */
 void oprollen() {
     PORTB = 0x01;
+	if (status_index != -1)
+	{
+		SCH_Delete_Task(status_index);
+	}
+	status_index = SCH_Add_Task(status,0,10);
 }
 
 void uitrollen() {
     PORTB = 0x02;
+	if (status_index != -1)
+	{
+		SCH_Delete_Task(status_index);
+	}
 	status_index = SCH_Add_Task(status,0,10);
 }
 
@@ -267,6 +276,7 @@ int main()
 	init_rolluik();
 	uart_init();
 	SCH_Add_Task(uitrollen,1000,0);
+	SCH_Add_Task(oprollen,2000,0);
 	
 	while (1) {
 		SCH_Dispatch_Tasks();
