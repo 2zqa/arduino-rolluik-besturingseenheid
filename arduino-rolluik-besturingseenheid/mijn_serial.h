@@ -32,3 +32,8 @@ uint8_t receive() {
     loop_until_bit_is_set(UCSR0A,RXC0); // dit kan een tijdje duren, of zelfs oneindig!
     return UDR0;
 }
+
+uint8_t receive_once();
+uint8_t receive_once() {
+	return UDR0;
+}

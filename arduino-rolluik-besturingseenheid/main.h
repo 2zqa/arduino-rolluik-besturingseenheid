@@ -21,11 +21,14 @@ void SCH_Dispatch_Tasks(void);
 unsigned char SCH_Add_Task(void (*)(void), const unsigned int, const unsigned int);
 unsigned char SCH_Delete_Task(const unsigned char);
 
-// rolluik-methodes
+// rolluik functies
 void init_rolluik();
 void oprollen();
 void uitrollen();
 void status();
+
+// Serial functies
+void process_serial();
 
 // hier het aantal taken aanpassen ....!!
 // Maximum number of tasks
