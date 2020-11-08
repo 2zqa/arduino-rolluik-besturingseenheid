@@ -8,6 +8,8 @@
 // datasheet p.190; F_OSC = 16 MHz & baud rate = 19.200
 #define UBBRVAL 51
 
+uint8_t receive_once();
+
 void uart_init() {
     // set the baud rate
     UBRR0H = 0;
@@ -33,7 +35,7 @@ uint8_t receive() {
     return UDR0;
 }
 
-uint8_t receive_once();
+
 uint8_t receive_once() {
 	return UDR0;
 }

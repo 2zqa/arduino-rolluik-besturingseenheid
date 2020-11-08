@@ -1,7 +1,6 @@
 #include "main.h"
-
-// Code voor serial
 #include "mijn_serial.h"
+#include "adc.h"
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
@@ -11,6 +10,8 @@ sTask SCH_tasks_G[SCH_MAX_TASKS];
 // index van status task
 int8_t status_index = -1;
 int8_t previous_byte = -1;
+
+uint8_t maximum_distance_cm = 100;
 
 
 /*------------------------------------------------------------------*-
@@ -291,29 +292,51 @@ void process_serial() {
     
 }
 
-void init_temperatuur() {
-    DDRC = 0x00;
+// wordt 1x per seconde aangeroepen
+void send_temperature_info() {
+    float temp = (((float)get_adc_value() * 5000 / 1024) - 500) / 10;
+    transmit(temp);
 }
 
-void send_temperature_info() {
-    transmit(PINC);
+void check_distance() {
+    
+    maximum_distance_cm = 100; // wordt later ook instelbaar
+    uint8_t huidige_tijdelijke_meetwaarde = 30; // later: afstand = get_distance();
+//     stel: afstandsmeter meet 30cm
+// 
+//     maximum: 80cm (aanpasbaar)
+//     minimum: 0 (altijd)
+// 
+// 
+//     uitrollen();
+// 
+//     sensor detecteert 80cm EN dat het lampje nog aanstaat (ofwel: statusLED knippert, ofwel: status_index != -1)
+//     dan -> roep stop_rollen()-functie aan.
+// 
+//     inrollen();
+// 
+//     sensor detecteert < 1cm EN het lampje knippert
+//     dan -> ook stop_rollen()-functie aanroepen
 }
 
 int main()
 {
-    SCH_Init_T1(); // init de timeren verwijder alle taken
-    SCH_Start();   // start de scheduler
-    ADMUX = (1 << REFS0) | (1 << MUX0) | (1 << MUX2);
-    
-    // Eenmalige functies
+    // Inits
+    init_adc();
+    init_distance_sensor();
     init_rolluik();
     uart_init();
-    init_temperatuur();
+    SCH_Init_T1();
     
-    // Herhalende functies
+    // schakel scheduler in (interrupts)
+    SCH_Start();
+    
+    // Taken
     SCH_Add_Task(process_serial,0,10);
-    //SCH_Add_Task(send_temperature_info,0,400);
-    
+    SCH_Add_Task(send_temperature_info,0,100);
+    SCH_Add_Task(check_distance,0,1);
+
+    // Handel taken af
     while (1) {
         SCH_Dispatch_Tasks();
     }
