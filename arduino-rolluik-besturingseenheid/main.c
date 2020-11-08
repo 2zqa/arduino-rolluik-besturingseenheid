@@ -12,6 +12,7 @@ int8_t status_index = -1;
 int8_t previous_byte = -1;
 
 uint8_t maximum_distance_cm = 100;
+uint8_t minimun_distance_cm = 1;
 
 
 /*------------------------------------------------------------------*-
@@ -301,7 +302,17 @@ void send_temperature_info() {
 void check_distance() {
     
     maximum_distance_cm = 100; // wordt later ook instelbaar
+	//minimun_distance_cm = 1;
     uint8_t huidige_tijdelijke_meetwaarde = 30; // later: afstand = get_distance();
+	
+	if (huidige_tijdelijke_meetwaarde > maximum_distance_cm && status_index != -1)
+	{
+		stop_rollen();
+	} else if(huidige_tijdelijke_meetwaarde < minimun_distance_cm && status_index != -1){
+		stop_rollen();
+	} else {
+		oprollen(); //doorgaan met oprollen(); of uitrollen();
+	}
 //     stel: afstandsmeter meet 30cm
 // 
 //     maximum: 80cm (aanpasbaar)
