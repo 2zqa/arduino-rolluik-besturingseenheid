@@ -33,6 +33,7 @@ void process_serial();
 // Temperatuur functies
 void init_temperatuur();
 void send_temperature_info();
+void init_distance_sensor();
 void check_distance();
 float get_temperatuur();
 
