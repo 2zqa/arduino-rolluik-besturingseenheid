@@ -12,8 +12,8 @@ sTask SCH_tasks_G[SCH_MAX_TASKS];
 int8_t status_index = -1;
 int8_t previous_byte = -1;
 
-uint8_t maximum_distance_cm = 100;
-uint8_t minimum_distance_cm = 1;
+float maximum_distance_cm = 100;
+float minimum_distance_cm = 0.5;
 
 
 /*------------------------------------------------------------------*-
@@ -315,6 +315,12 @@ void check_distance() {
 	}
 }
 
+void check_light_intensity(){
+	// lichtintensiteit meten elke 30 seconden
+	// doorsturen elke 60 seconden
+	//return 0;
+}
+
 int main()
 {
     // Inits
@@ -331,6 +337,7 @@ int main()
     SCH_Add_Task(process_serial,0,10); // commando's uitvoeren: oprollen, etc
     SCH_Add_Task(send_temperature_info,0,100); // stuur temp in graden celcius
     SCH_Add_Task(check_distance,0,1); // WIP: stuur automatisch stop-commando's gebaseerd op afstand
+	SCH_Add_Task(check_light_intensity,0,300);
 
     // Handel taken af
     while (1) {

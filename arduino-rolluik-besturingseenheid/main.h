@@ -36,6 +36,7 @@ void send_temperature_info();
 void init_distance_sensor();
 void check_distance();
 float get_temperatuur();
+void check_light_intensity();
 
 // hier het aantal taken aanpassen ....!!
 // Maximum number of tasks
