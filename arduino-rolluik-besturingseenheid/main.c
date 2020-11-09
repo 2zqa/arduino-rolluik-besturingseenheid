@@ -13,7 +13,7 @@ int8_t status_index = -1;
 int8_t previous_byte = -1;
 
 uint8_t maximum_distance_cm = 100;
-uint8_t minimun_distance_cm = 1;
+uint8_t minimum_distance_cm = 1;
 
 
 /*------------------------------------------------------------------*-
@@ -303,35 +303,16 @@ void send_temperature_info() {
     transmit((int8_t)get_temperatuur());
 }
 
+// Stop automatisch rollen gebaseerd op afstand van rolluik
 void check_distance() {
-
-    maximum_distance_cm = 100; // wordt later ook instelbaar
-	//minimun_distance_cm = 1;
     uint8_t huidige_tijdelijke_meetwaarde = 30; // later: afstand = get_distance();
 	
 	if (huidige_tijdelijke_meetwaarde > maximum_distance_cm && status_index != -1)
 	{
 		stop_rollen();
-	} else if(huidige_tijdelijke_meetwaarde < minimun_distance_cm && status_index != -1){
+	} else if(huidige_tijdelijke_meetwaarde < minimum_distance_cm && status_index != -1){
 		stop_rollen();
-	} else {
-		oprollen(); //doorgaan met oprollen(); of uitrollen();
 	}
-//     stel: afstandsmeter meet 30cm
-// 
-//     maximum: 80cm (aanpasbaar)
-//     minimum: 0 (altijd)
-// 
-// 
-//     uitrollen();
-// 
-//     sensor detecteert 80cm EN dat het lampje nog aanstaat (ofwel: statusLED knippert, ofwel: status_index != -1)
-//     dan -> roep stop_rollen()-functie aan.
-// 
-//     inrollen();
-// 
-//     sensor detecteert < 1cm EN het lampje knippert
-//     dan -> ook stop_rollen()-functie aanroepen
 }
 
 int main()
