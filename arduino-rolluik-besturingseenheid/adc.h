@@ -6,18 +6,31 @@
  *  Author: school
  */ 
 void init_adc();
-uint8_t get_adc_value();
+uint8_t get_adc_value(uint8_t pin);
 
 void init_adc() {
-    // ref=Vcc, left adjust the result (8-bit resolution),
-    // select channel 0 (PC0 = input)
-    ADMUX = (1<<REFS0)|(1<<ADLAR);
-    // enable the ADC & prescale= 128
-    ADCSRA = (1<<ADEN)|(1<<ADPS2)|(1<<ADPS1)|(1<<ADPS0);
+    // Source: https://medium.com/@jrejaud/arduino-to-avr-c-reference-guide-7d113b4309f7
+    // 16Mhz / 128 = 125kHz ADC reference clock
+    ADCSRA |= ((1<<ADPS2)|(1<<ADPS1)|(1<<ADPS0));
+    
+    // Voltage reference from AVcc (5V on ATMega328p)
+    ADMUX |= (1<<REFS0);
+    
+    ADCSRA |= (1<<ADEN);    // Turn on ADC
+    ADCSRA |= (1<<ADSC);    // Do a preliminary conversion
 }
 
-uint8_t get_adc_value() {
-    ADCSRA|=(1<<ADSC); // start conversion
-    loop_until_bit_is_clear(ADCSRA,ADSC);
-    return ADCH; // 8-bit resolution, left adjusted
+uint8_t get_adc_value(uint8_t pin) {
+    // Source: https://medium.com/@jrejaud/arduino-to-avr-c-reference-guide-7d113b4309f7
+    ADMUX &= 0xF0;    // Clear previously read channel
+    ADMUX |= pin;    // Define new ADC Channel to read, analog pins 0 to 5 on ATMega328p
+    
+    ADCSRA |= (1<<ADSC);    // New Conversion
+    ADCSRA |= (1<<ADSC);    // Do a preliminary conversion
+    
+    // Wait until conversion is finished
+    while(ADCSRA & (1<<ADSC));
+    
+    // Return ADC value
+    return ADCW;
 }

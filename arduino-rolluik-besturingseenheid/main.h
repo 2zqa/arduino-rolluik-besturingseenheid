@@ -34,6 +34,7 @@ void process_serial();
 void init_temperatuur();
 void send_temperature_info();
 void check_distance();
+float get_temperatuur();
 
 // hier het aantal taken aanpassen ....!!
 // Maximum number of tasks

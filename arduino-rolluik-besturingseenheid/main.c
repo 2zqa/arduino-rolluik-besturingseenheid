@@ -1,6 +1,7 @@
 #include "main.h"
 #include "mijn_serial.h"
 #include "adc.h"
+//#include "distance.c"
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
@@ -292,16 +293,19 @@ void process_serial() {
     
 }
 
+float get_temperatuur() {
+    return 0.48828125*get_adc_value(0)-50;
+}
+
 // wordt 1x per seconde aangeroepen
 void send_temperature_info() {
-    float temp = (((float)get_adc_value() * 5000 / 1024) - 500) / 10;
-    transmit(temp);
+    transmit((int8_t)get_temperatuur());
 }
 
 void check_distance() {
-    
+
     maximum_distance_cm = 100; // wordt later ook instelbaar
-    uint8_t huidige_tijdelijke_meetwaarde = 30; // later: afstand = get_distance();
+    //uint8_t huidige_tijdelijke_meetwaarde = 30; // later: afstand = get_distance();
 //     stel: afstandsmeter meet 30cm
 // 
 //     maximum: 80cm (aanpasbaar)
@@ -323,7 +327,7 @@ int main()
 {
     // Inits
     init_adc();
-    init_distance_sensor();
+    //init_distance_sensor();
     init_rolluik();
     uart_init();
     SCH_Init_T1();
@@ -332,9 +336,9 @@ int main()
     SCH_Start();
     
     // Taken
-    SCH_Add_Task(process_serial,0,10);
-    SCH_Add_Task(send_temperature_info,0,100);
-    SCH_Add_Task(check_distance,0,1);
+    SCH_Add_Task(process_serial,0,10); // commando's uitvoeren: oprollen, etc
+    SCH_Add_Task(send_temperature_info,0,100); // stuur temp in graden celcius
+    SCH_Add_Task(check_distance,0,1); // WIP: stuur automatisch stop-commando's gebaseerd op afstand
 
     // Handel taken af
     while (1) {
