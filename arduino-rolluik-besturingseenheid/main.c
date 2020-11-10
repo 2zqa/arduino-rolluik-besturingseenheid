@@ -15,6 +15,9 @@ int8_t previous_byte = -1;
 float maximum_distance_cm = 100;
 float minimum_distance_cm = 0.5;
 
+float maximum_light_intensity = 100;
+float minimum_light_intensity = 20;
+
 
 /*------------------------------------------------------------------*-
 
@@ -303,6 +306,10 @@ void send_temperature_info() {
     transmit((int8_t)get_temperatuur());
 }
 
+
+
+//float get_distance(){}
+	
 // Stop automatisch rollen gebaseerd op afstand van rolluik
 void check_distance() {
     uint8_t huidige_tijdelijke_meetwaarde = 30; // later: afstand = get_distance();
@@ -315,11 +322,18 @@ void check_distance() {
 	}
 }
 
+//float get_light_intensity(){}
+	
 void check_light_intensity(){
-	// lichtintensiteit meten elke 30 seconden
-	// doorsturen elke 60 seconden
-	//return 0;
+	uint8_t tijdelijke_lichtmeetwaarde = 30; // later: lichtintensiteit = get_lightintensity();
+	if (tijdelijke_lichtmeetwaarde > maximum_light_intensity) {
+		uitrollen();
+	} else if(tijdelijke_lichtmeetwaarde < minimum_light_intensity) {
+		oprollen();
+	}
 }
+
+//void send_light_intensity_info(){}
 
 int main()
 {
