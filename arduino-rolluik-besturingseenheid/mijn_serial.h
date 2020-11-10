@@ -17,7 +17,7 @@ void uart_init() {
     // disable U2X mode
     UCSR0A = 0;
     // enable transmitter and receiver
-    UCSR0B |= (1 << RXEN0) | (1 << TXEN0);
+    UCSR0B |= /*(1 << RXEN0) |*/ (1 << TXEN0);
     // set frame format : asynchronous, 8 data bits, 1 stop bit, no parity
     UCSR0C = _BV(UCSZ01) | _BV(UCSZ00);
 }
@@ -33,9 +33,4 @@ void transmit(uint8_t data) {
 uint8_t receive() {
     loop_until_bit_is_set(UCSR0A,RXC0); // dit kan een tijdje duren, of zelfs oneindig!
     return UDR0;
-}
-
-
-uint8_t receive_once() {
-	return UDR0;
 }

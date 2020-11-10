@@ -14,7 +14,7 @@ typedef struct
 // Function prototypes
 //-------------------------------------------------------------------
 
-void SCH_Init_T1(void);
+void SCH_Init_T0(void);
 void SCH_Start(void);
 // Core scheduler functions
 void SCH_Dispatch_Tasks(void);
@@ -36,6 +36,7 @@ void send_temperature_info();
 void init_distance_sensor();
 void check_distance();
 float get_temperatuur();
+float get_light();
 void check_light_intensity();
 
 // hier het aantal taken aanpassen ....!!

@@ -1,7 +1,7 @@
 #include "main.h"
 #include "mijn_serial.h"
 #include "adc.h"
-//#include "distance.c"
+#include "afstand.h"
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
@@ -158,7 +158,7 @@ You must call this function before using the scheduler.
 
 -*------------------------------------------------------------------*/
 
-void SCH_Init_T1(void)
+void SCH_Init_T0(void)
 {
     unsigned char i;
 
@@ -167,13 +167,14 @@ void SCH_Init_T1(void)
         SCH_Delete_Task(i);
     }
 
-    // Set up Timer 1
+    // Set up Timer 0
     // Values for 1ms and 10ms ticks are provided for various crystals
 
     // Hier moet de timer periode worden aangepast ....!
-    OCR1A = (uint16_t)625;   		     // 10ms = (256/16.000.000) * 625
-    TCCR1B = (1 << CS12) | (1 << WGM12);  // prescale op 64, top counter = value OCR1A (CTC mode)
-    TIMSK1 = 1 << OCIE1A;   		     // Timer 1 Output Compare A Match Interrupt Enable
+    TCCR0A |= (1 << WGM01);
+    OCR0A = (uint8_t)250; // OCRn = 16000000/prescale/1000 * <gewenste tijd in ms>, waar OCRn een integer is en < 256
+    TIMSK0 |= (1 << OCIE0A); // enable 
+    TCCR0B |= (1 << CS02);
 }
 
 /*------------------------------------------------------------------*-
@@ -185,7 +186,7 @@ Starts the scheduler, by enabling interrupts.
 NOTE: Usually called after all regular tasks are added,
 to keep the tasks synchronised.
 
-NOTE: ONLY THE SCHEDULER INTERRUPT SHOULD BE ENABLED!!!
+NOTE: ONLY THE SCHEDULER INTERRUPT SHOULD BE ENABLED!!! ?????
 
 -*------------------------------------------------------------------*/
 
@@ -203,7 +204,7 @@ determined by the timer settings in SCH_Init_T1().
 
 -*------------------------------------------------------------------*/
 
-ISR(TIMER1_COMPA_vect)
+ISR(TIMER0_COMPA_vect)
 {
     unsigned char Index;
     for(Index = 0; Index < SCH_MAX_TASKS; Index++)
@@ -298,9 +299,21 @@ float get_temperatuur() {
     return 0.48828125*get_adc_value(0)-50;
 }
 
-// wordt 1x per seconde aangeroepen
+float get_light() {
+ return get_adc_value(1);
+}
+
+   // wordt 1x per seconde aangeroepen
 void send_temperature_info() {
     transmit((int8_t)get_temperatuur());
+}
+
+void send_distance_info() {
+    transmit((int8_t)get_distance());
+}
+
+void send_light_info() {
+    transmit((int8_t)get_light());
 }
 
 // Stop automatisch rollen gebaseerd op afstand van rolluik
@@ -325,19 +338,25 @@ int main()
 {
     // Inits
     init_adc();
-    //init_distance_sensor();
     init_rolluik();
     uart_init();
-    SCH_Init_T1();
+    SCH_Init_T0();
+    init_ports();
+    init_timer();
+    init_ext_int();
     
     // schakel scheduler in (interrupts)
     SCH_Start();
     
     // Taken
     SCH_Add_Task(process_serial,0,10); // commando's uitvoeren: oprollen, etc
-    SCH_Add_Task(send_temperature_info,0,100); // stuur temp in graden celcius
+    //SCH_Add_Task(send_temperature_info,0,100); // stuur temp in graden celcius
     SCH_Add_Task(check_distance,0,1); // WIP: stuur automatisch stop-commando's gebaseerd op afstand
 	SCH_Add_Task(check_light_intensity,0,300);
+    
+    // Debug
+    //SCH_Add_Task(send_distance_info,0,100);
+    SCH_Add_Task(send_light_info,0,100);
 
     // Handel taken af
     while (1) {
