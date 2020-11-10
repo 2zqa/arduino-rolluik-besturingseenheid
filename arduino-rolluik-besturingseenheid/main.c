@@ -18,6 +18,9 @@ float minimum_distance_cm = 0.5;
 float maximum_light_intensity = 100;
 float minimum_light_intensity = 20;
 
+float maximum_temperature = 25;
+float minimum_temperature = 15;
+
 
 /*------------------------------------------------------------------*-
 
@@ -306,7 +309,16 @@ void send_temperature_info() {
     transmit((int8_t)get_temperatuur());
 }
 
-
+void check_temperature() {
+	//uint8_t tijdelijke_temperatuur = 30; // later: afstand = get_distance();
+	
+	if (get_temperatuur() > maximum_temperature)
+	{
+		uitrollen();
+	} else if (get_temperatuur() < minimum_temperature) {
+		oprollen();
+	}
+}
 
 //float get_distance(){}
 	
@@ -317,7 +329,7 @@ void check_distance() {
 	if (huidige_tijdelijke_meetwaarde > maximum_distance_cm && status_index != -1)
 	{
 		stop_rollen();
-	} else if(huidige_tijdelijke_meetwaarde < minimum_distance_cm && status_index != -1){
+	} else if (huidige_tijdelijke_meetwaarde < minimum_distance_cm && status_index != -1){
 		stop_rollen();
 	}
 }
@@ -328,7 +340,7 @@ void check_light_intensity(){
 	uint8_t tijdelijke_lichtmeetwaarde = 30; // later: lichtintensiteit = get_lightintensity();
 	if (tijdelijke_lichtmeetwaarde > maximum_light_intensity) {
 		uitrollen();
-	} else if(tijdelijke_lichtmeetwaarde < minimum_light_intensity) {
+	} else if (tijdelijke_lichtmeetwaarde < minimum_light_intensity) {
 		oprollen();
 	}
 }

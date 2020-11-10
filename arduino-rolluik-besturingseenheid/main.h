@@ -33,10 +33,15 @@ void process_serial();
 // Temperatuur functies
 void init_temperatuur();
 void send_temperature_info();
+float get_temperatuur();
+
+// Afstand functies
 void init_distance_sensor();
 void check_distance();
-float get_temperatuur();
+
+// Lichtintensiteit functies
 void check_light_intensity();
+
 
 // hier het aantal taken aanpassen ....!!
 // Maximum number of tasks
