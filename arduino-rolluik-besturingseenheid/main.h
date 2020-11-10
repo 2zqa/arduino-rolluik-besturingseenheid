@@ -44,7 +44,7 @@ float get_temperatuur();
 
 // Lichtintensiteit functies
 void check_light_intensity();
-float get_light();
+uint8_t get_light();
 
 // hier het aantal taken aanpassen ....!!
 // Maximum number of tasks

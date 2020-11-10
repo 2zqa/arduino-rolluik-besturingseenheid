@@ -1,9 +1,9 @@
+#include <avr/io.h>
+#include <avr/interrupt.h>
 #include "main.h"
 #include "mijn_serial.h"
 #include "adc.h"
 #include "afstand.h"
-#include <avr/io.h>
-#include <avr/interrupt.h>
 
 // The array of tasks
 sTask SCH_tasks_G[SCH_MAX_TASKS];
@@ -305,8 +305,8 @@ float get_temperatuur() {
     return 0.48828125*get_adc_value(0)-50;
 }
 
-float get_light() {
- return get_adc_value(1);
+uint8_t get_light() {
+    return get_adc_value(1);
 }
 
    // wordt 1x per seconde aangeroepen
@@ -319,7 +319,7 @@ void send_distance_info() {
 }
 
 void send_light_info() {
-    transmit((int8_t)get_light());
+    transmit(get_light());
 }
 
 void check_temperature() {
