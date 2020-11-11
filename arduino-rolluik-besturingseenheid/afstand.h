@@ -29,6 +29,7 @@
 #define BEGIN 0x1
 #define END 0x0
 
+void init_ports(void);
 void init_timer(void);
 void init_ext_int(void);
 uint16_t calc_cm(uint32_t counter);
@@ -38,11 +39,8 @@ volatile uint8_t gv_echo; // a flag
 
 void init_ports(void)
 {
-    DDRB=0xff; // set port B as output
-    PORTB=0x00;
     DDRD=0x01; // set port D0 as output, D3 as input
     PORTD = 0x00; // clear bit D0
-	_delay_us(10);
 }
 
 void init_timer(void)

@@ -177,10 +177,10 @@ void SCH_Init_T0(void)
     // Values for 1ms and 10ms ticks are provided for various crystals
 
     // Hier moet de timer periode worden aangepast ....!
-    TCCR0A |= (1 << WGM01);
+    TCCR0A |= (1 << WGM01); // CTC instellen
     OCR0A = (uint8_t)250; // OCRn = 16000000/prescale/1000 * <gewenste tijd in ms>, waar OCRn een integer is en < 256
-    TIMSK0 |= (1 << OCIE0A); // enable 
-    TCCR0B |= (1 << CS02);
+    TIMSK0 |= (1 << OCIE0A); // interrupt wanneer de OCR bereikt is
+    TCCR0B |= (1 << CS02); // prescaler op 256 in; dit betekent ook dat de klok nu gaat tikken
 }
 
 /*------------------------------------------------------------------*-
@@ -249,37 +249,34 @@ void init_rolluik() {
 Stelt het lampje op groen in
 */
 void oprollen() {
-    PORTB = 0x01;
-    transmit(10);
+    PORTB = (1 << 0);
     if (status_index == -1) // als het lampje niet al knippert, laat het knipperen
     {
-        transmit(20);
-        status_index = SCH_Add_Task(status,0,10);
+        status_index = SCH_Add_Task(toggle_status_led,0,10);
     }
 }
 
 void uitrollen() {
-    PORTB = 0x02;
+    PORTB = (1 << 1);
     if (status_index == -1) // als het lampje niet al knippert, laat het knipperen
     {
-        status_index = SCH_Add_Task(status,0,10);
+        status_index = SCH_Add_Task(toggle_status_led,0,20);
     }
-    
 }
 
 /*
-Schakel gele lampje
+    Schakel/togglet gele lampje d.m.v. XOR
 */
-void status() {
-    PORTB ^= 0x04;
+void toggle_status_led() {
+    PORTB ^= (1 << 2);
 }
 
 void stop_rollen() {
-    PORTB = 0x00;
     if (status_index != -1) // als het lampje knippert, stop het
     {
         SCH_Delete_Task(status_index);
         status_index = -1;
+        PORTB &= ~(1 << 2);
     }
 }
 
@@ -287,10 +284,10 @@ void process_serial() {
     if(UCSR0A & (1 << RXC0)) {
         uint8_t received_byte = UDR0;
         switch (received_byte) {
-            case 0x01: // Uitrollen
+            case 0x01: // oprollen
                 oprollen();
                 break;
-            case 0x02: // Inrollen
+            case 0x02: // uitrollen
                 uitrollen();
                 break;
             case 0x03: // Stop met rollen
@@ -298,7 +295,6 @@ void process_serial() {
                 break;
         }
     }
-    
 }
 
 float get_temperatuur() {
@@ -380,7 +376,7 @@ int main()
     
     // Debug
     //SCH_Add_Task(send_distance_info,0,100);
-    SCH_Add_Task(send_light_info,0,100);
+    //SCH_Add_Task(send_light_info,0,100);
 
     // Handel taken af
     while (1) {

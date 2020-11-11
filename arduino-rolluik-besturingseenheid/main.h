@@ -25,7 +25,7 @@ unsigned char SCH_Delete_Task(const unsigned char);
 void init_rolluik();
 void oprollen();
 void uitrollen();
-void status();
+void toggle_status_led();
 
 // Serial functies
 void process_serial();
