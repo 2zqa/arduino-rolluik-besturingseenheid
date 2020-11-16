@@ -39,7 +39,7 @@ volatile uint8_t gv_echo; // a flag
 
 void init_ports(void)
 {
-    DDRD=0x01; // set port D0 as output, D3 as input
+    DDRD= (1 << 4); // set port D4 as output, D3 (and rest) as input
     PORTD = 0x00; // clear bit D0
 }
 
@@ -71,10 +71,10 @@ uint16_t calc_cm(uint32_t counter)
 uint16_t get_distance() {
     uint16_t cm = 0;
     gv_echo = BEGIN; // set flag for ISR
-    // start trigger pulse lo -> hi (D0)
-    PORTD |= _BV(0);
+    // start trigger pulse lo -> hi (D4)
+    PORTD |= _BV(4);
     _delay_us(12); // micro sec
-    // stop trigger pulse hi -> lo (D0)
+    // stop trigger pulse hi -> lo (D4)
     PORTD = 0x00;
     // wait 30 milli sec, gv_counter == timer1 (read in ISR)
     _delay_ms(30);
