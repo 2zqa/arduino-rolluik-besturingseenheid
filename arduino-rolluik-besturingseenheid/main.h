@@ -26,6 +26,8 @@ void init_rolluik();
 void oprollen();
 void uitrollen();
 void toggle_status_led();
+void stop_rollen();
+void start_rollen();
 
 // Serial functies
 void process_serial();

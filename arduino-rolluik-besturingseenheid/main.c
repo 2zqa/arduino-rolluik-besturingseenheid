@@ -258,11 +258,10 @@ void uitrollen() {
 	start_rollen();
 }
 
-
-uint8_t start_rollen() {
+void start_rollen() {
 	if (status_index == -1) // als het lampje niet al knippert, laat het knipperen
 	{
-		status_index = SCH_Add_Task(toggle_status_led,0,20);
+		status_index = SCH_Add_Task(toggle_status_led,0,25);
 	}
 }
 /*
