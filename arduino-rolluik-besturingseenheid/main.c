@@ -250,20 +250,21 @@ Stelt het lampje op groen in
 */
 void oprollen() {
     PORTB = (1 << 0);
-    if (status_index == -1) // als het lampje niet al knippert, laat het knipperen
-    {
-        status_index = SCH_Add_Task(toggle_status_led,0,10);
-    }
+	start_rollen();
 }
 
 void uitrollen() {
     PORTB = (1 << 1);
-    if (status_index == -1) // als het lampje niet al knippert, laat het knipperen
-    {
-        status_index = SCH_Add_Task(toggle_status_led,0,20);
-    }
+	start_rollen();
 }
 
+
+uint8_t start_rollen() {
+	if (status_index == -1) // als het lampje niet al knippert, laat het knipperen
+	{
+		status_index = SCH_Add_Task(toggle_status_led,0,20);
+	}
+}
 /*
     Schakel/togglet gele lampje d.m.v. XOR
 */
