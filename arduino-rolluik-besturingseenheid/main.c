@@ -321,10 +321,10 @@ void send_light_info() {
 void check_temperature() {
 	//uint8_t tijdelijke_temperatuur = 30; // later: afstand = get_distance();
 	
-	if (get_temperatuur() > maximum_temperature)
+	if (get_temperatuur() > maximum_temperature && status_index == -1)
 	{
 		uitrollen();
-	} else if (get_temperatuur() < minimum_temperature) {
+	} else if (get_temperatuur() < minimum_temperature && status_index == -1) {
 		oprollen();
 	}
 }
@@ -333,10 +333,10 @@ void check_temperature() {
 void check_distance() {
     uint8_t meetwaarde = get_distance(); // later: afstand = get_distance();
 	
-	if (meetwaarde > maximum_distance_cm) //&& status_index != -1)
+	if (meetwaarde > maximum_distance_cm && status_index == -1)
 	{
 		stop_rollen();
-	} else if (meetwaarde < minimum_distance_cm){ //&& status_index != -1){
+	} else if (meetwaarde < minimum_distance_cm && status_index == -1){
 		stop_rollen();
 	}
 }
@@ -345,9 +345,9 @@ void check_distance() {
 	
 void check_light_intensity(){
 	uint8_t lichtmeetwaarde = get_light(); // later: lichtintensiteit = get_lightintensity();
-	if (lichtmeetwaarde > maximum_light_intensity) {
+	if (lichtmeetwaarde > maximum_light_intensity && status_index == -1) {
 		uitrollen();
-	} else if (lichtmeetwaarde < minimum_light_intensity) {
+	} else if (lichtmeetwaarde < minimum_light_intensity && status_index == -1) {
 		oprollen();
 	}
 }
@@ -376,7 +376,7 @@ int main()
     
     // Debug
     //SCH_Add_Task(send_distance_info,0,100);
-    SCH_Add_Task(send_light_info,0,100);
+    //SCH_Add_Task(send_light_info,0,100);
 
     // Handel taken af
     while (1) {
