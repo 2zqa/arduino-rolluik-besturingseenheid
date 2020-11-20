@@ -48,10 +48,12 @@ uint8_t get_light();
 void set_light_mode();
 
 // Overige functies
-float calculate_average(int8_t array[], int8_t len);
-void add_data_to_array(int8_t waarde, int8_t array[], int8_t len);
+float calculate_uint8_average(uint8_t array[], uint8_t len);
+float calculate_float_average(float array[], uint8_t len);
+void add_uint8_to_array(uint8_t waarde, uint8_t array[], uint8_t len);
+void add_float_to_array(float waarde, float array[], uint8_t len);
 
 // hier het aantal taken aanpassen ....!!
 // Maximum number of tasks
 
-#define SCH_MAX_TASKS (5)
+#define SCH_MAX_TASKS (6)

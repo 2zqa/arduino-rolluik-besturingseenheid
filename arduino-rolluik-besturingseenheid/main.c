@@ -12,7 +12,7 @@ sTask SCH_tasks_G[SCH_MAX_TASKS];
 int8_t status_index = -1;
 int8_t previous_byte = -1;
 int8_t mode_index = -1;
-uint8_t temperaturevalues[5] = { 0, 0, 0, 0, 0 };
+float temperaturevalues[5] = { 0, 0, 0, 0, 0 };
 uint8_t lightvalues[5] = { 0, 0, 0, 0, 0 };
 uint8_t rolluik_status = 0;
 int8_t send_index = -1;
@@ -314,27 +314,27 @@ float get_temperatuur() {
     return 0.48828125*get_adc_value(0)-50;
 }
 
-void add_temperature(){
-	add_data_to_array(get_temperatuur(),temperaturevalues,5);
-}
-
 uint8_t get_light() {
     return get_adc_value(1);
 }
 
+void add_temperature(){
+	add_float_to_array(get_temperatuur(),temperaturevalues,5);
+}
+
 void add_light(){
-	add_data_to_array(get_light(),lightvalues,5);
+	add_uint8_to_array(get_light(),lightvalues,5);
 }
 
    // wordt 1x per seconde aangeroepen
 void send_temperature_info() {
 	transmit(rolluik_status);
-	transmit(calculate_average(temperaturevalues,5));
+	transmit(calculate_float_average(temperaturevalues,5));
 }
 
 void send_light_info() {
 	transmit(rolluik_status);
-	transmit(calculate_average(lightvalues,5));
+	transmit(calculate_uint8_average(lightvalues,5));
 }
 
 void check_temperature() {
@@ -374,32 +374,50 @@ void check_light_intensity(){
 void set_temperature_mode(){
 	SCH_Delete_Task(mode_index); // Stop met sturen van lichtdata
 	SCH_Delete_Task(send_index);
-	send_index = SCH_Add_Task(add_temperature,0,10000);
-	mode_index = SCH_Add_Task(send_temperature_info,0,15000); // Start met sturen van temperatuurdata
+	send_index = SCH_Add_Task(add_temperature,0,1000); // TODO: 0 toevoegen aan period
+	mode_index = SCH_Add_Task(send_temperature_info,0,1500); // Start met sturen van temperatuurdata // TODO: 0 toevoegen aan period
 }
 
 void set_light_mode() {
 	SCH_Delete_Task(mode_index); // Stop met sturen van temperatuurdata
 	SCH_Delete_Task(send_index);
-	send_index = SCH_Add_Task(add_light,0,7500);
-	mode_index = SCH_Add_Task(send_light_info,0,15000); // Start met sturen van lichtdata
+	send_index = SCH_Add_Task(add_light,0,750); // TODO: 0 toevoegen aan period
+	mode_index = SCH_Add_Task(send_light_info,0,1500); // Start met sturen van lichtdata  // TODO: 0 toevoegen aan period
 }
 
-void add_data_to_array(int8_t waarde, int8_t array[], int8_t len) {
+void add_uint8_to_array(uint8_t waarde, uint8_t array[], uint8_t len) {
 	// Verplaats alle indexen in de array eentje naar rechts, overschrijf de oudste
 	// Voeg waarde toe aan array op index 0
-	for(int8_t i = len-1; i > 0; i--){
+	for(uint8_t i = len-1; i > 0; i--){
 		array[i] = array[i-1];
 	}
 	array[0] = waarde;
 }
 
-float calculate_average(int8_t array[], int8_t len) {
+void add_float_to_array(float waarde, float array[], uint8_t len) {
+    // Verplaats alle indexen in de array eentje naar rechts, overschrijf de oudste
+    // Voeg waarde toe aan array op index 0
+    for(uint8_t i = len-1; i > 0; i--){
+        array[i] = array[i-1];
+    }
+    array[0] = waarde;
+}
+
+
+float calculate_uint8_average(uint8_t array[], uint8_t len) {
 	uint8_t sum = 0;
 	for (int i = 0; i < len; i++){
 		sum += array[i];
 	}
 	return sum/len;
+}
+
+float calculate_float_average(float array[], uint8_t len) {
+    uint8_t sum = 0;
+    for (int i = 0; i < len; i++){
+        sum += array[i];
+    }
+    return sum/len;
 }
 
 int main()
@@ -417,12 +435,11 @@ int main()
     SCH_Start();
     
     // Taken
-    SCH_Add_Task(process_serial,0,10); // commando's uitvoeren: oprollen, etc
-	
-    SCH_Add_Task(check_distance,0,1); // WIP: stuur automatisch stop-commando's gebaseerd op afstand
-	SCH_Add_Task(check_light_intensity,0,300);
- 	send_index = SCH_Add_Task(add_light,0,7500);
- 	mode_index = SCH_Add_Task(send_light_info,0,15000);
+    SCH_Add_Task(process_serial,0,1); // commando's uitvoeren: oprollen, etc
+    SCH_Add_Task(check_distance,0,1);
+	SCH_Add_Task(check_light_intensity,0,300); // 300??
+ 	send_index = SCH_Add_Task(add_light,0,750); // TODO: 0 toevoegen aan period
+ 	mode_index = SCH_Add_Task(send_light_info,0,1500); // TODO: 0 toevoegen aan period
 
     // Handel taken af
     while (1) {
