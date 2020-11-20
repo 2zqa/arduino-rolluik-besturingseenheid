@@ -11,6 +11,11 @@ sTask SCH_tasks_G[SCH_MAX_TASKS];
 // index van status task
 int8_t status_index = -1;
 int8_t previous_byte = -1;
+int8_t mode_index = -1;
+uint8_t temperaturevalues[5] = { 0, 0, 0, 0, 0 };
+uint8_t lightvalues[5] = { 0, 0, 0, 0, 0 };
+uint8_t rolluik_status = 0;
+int8_t send_index = -1;
 
 float maximum_distance_cm = 100;
 float minimum_distance_cm = 0.5;
@@ -249,11 +254,13 @@ void init_rolluik() {
 Stelt het lampje op groen in
 */
 void oprollen() {
+	rolluik_status = 3;
     PORTB = (1 << 0);
 	start_rollen();
 }
 
 void uitrollen() {
+	rolluik_status = 3;
     PORTB = (1 << 1);
 	start_rollen();
 }
@@ -293,6 +300,12 @@ void process_serial() {
             case 0x03: // Stop met rollen
                 stop_rollen();
                 break;
+			case 0x04:
+				set_temperature_mode();
+				break;
+			case 0x05:
+				set_light_mode();
+				break;
         }
     }
 }
@@ -301,21 +314,27 @@ float get_temperatuur() {
     return 0.48828125*get_adc_value(0)-50;
 }
 
+void add_temperature(){
+	add_data_to_array(get_temperatuur(),temperaturevalues,5);
+}
+
 uint8_t get_light() {
     return get_adc_value(1);
 }
 
-   // wordt 1x per seconde aangeroepen
-void send_temperature_info() {
-    transmit((int8_t)get_temperatuur());
+void add_light(){
+	add_data_to_array(get_light(),lightvalues,5);
 }
 
-void send_distance_info() {
-    transmit((int8_t)get_distance());
+   // wordt 1x per seconde aangeroepen
+void send_temperature_info() {
+	transmit(rolluik_status);
+	transmit(calculate_average(temperaturevalues,5));
 }
 
 void send_light_info() {
-    transmit(get_light());
+	transmit(rolluik_status);
+	transmit(calculate_average(lightvalues,5));
 }
 
 void check_temperature() {
@@ -336,12 +355,12 @@ void check_distance() {
 	if (meetwaarde > maximum_distance_cm && status_index == -1)
 	{
 		stop_rollen();
+		rolluik_status = 2;
 	} else if (meetwaarde < minimum_distance_cm && status_index == -1){
 		stop_rollen();
+		rolluik_status = 1;
 	}
 }
-
-//float get_light_intensity(){}
 	
 void check_light_intensity(){
 	uint8_t lichtmeetwaarde = get_light(); // later: lichtintensiteit = get_lightintensity();
@@ -352,7 +371,36 @@ void check_light_intensity(){
 	}
 }
 
-//void send_light_intensity_info(){}
+void set_temperature_mode(){
+	SCH_Delete_Task(mode_index); // Stop met sturen van lichtdata
+	SCH_Delete_Task(send_index);
+	send_index = SCH_Add_Task(add_temperature,0,10000);
+	mode_index = SCH_Add_Task(send_temperature_info,0,15000); // Start met sturen van temperatuurdata
+}
+
+void set_light_mode() {
+	SCH_Delete_Task(mode_index); // Stop met sturen van temperatuurdata
+	SCH_Delete_Task(send_index);
+	send_index = SCH_Add_Task(add_light,0,7500);
+	mode_index = SCH_Add_Task(send_light_info,0,15000); // Start met sturen van lichtdata
+}
+
+void add_data_to_array(int8_t waarde, int8_t array[], int8_t len) {
+	// Verplaats alle indexen in de array eentje naar rechts, overschrijf de oudste
+	// Voeg waarde toe aan array op index 0
+	for(int8_t i = len-1; i > 0; i--){
+		array[i] = array[i-1];
+	}
+	array[0] = waarde;
+}
+
+float calculate_average(int8_t array[], int8_t len) {
+	uint8_t sum = 0;
+	for (int i = 0; i < len; i++){
+		sum += array[i];
+	}
+	return sum/len;
+}
 
 int main()
 {
@@ -370,13 +418,11 @@ int main()
     
     // Taken
     SCH_Add_Task(process_serial,0,10); // commando's uitvoeren: oprollen, etc
-    //SCH_Add_Task(send_temperature_info,0,100); // stuur temp in graden celcius
+	
     SCH_Add_Task(check_distance,0,1); // WIP: stuur automatisch stop-commando's gebaseerd op afstand
 	SCH_Add_Task(check_light_intensity,0,300);
-    
-    // Debug
-    //SCH_Add_Task(send_distance_info,0,100);
-    //SCH_Add_Task(send_light_info,0,100);
+ 	send_index = SCH_Add_Task(add_light,0,7500);
+ 	mode_index = SCH_Add_Task(send_light_info,0,15000);
 
     // Handel taken af
     while (1) {
