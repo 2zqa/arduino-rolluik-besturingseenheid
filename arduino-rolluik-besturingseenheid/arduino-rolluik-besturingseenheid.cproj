@@ -139,6 +139,9 @@
     <Compile Include="afstand.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="autonomous.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="main.c">
       <SubType>compile</SubType>
     </Compile>
@@ -146,6 +149,15 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="mijn_serial.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="mode.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="rolluik.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="util.h">
       <SubType>compile</SubType>
     </Compile>
   </ItemGroup>

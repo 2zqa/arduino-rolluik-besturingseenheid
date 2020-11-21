@@ -8,7 +8,6 @@
 // datasheet p.190; F_OSC = 16 MHz & baud rate = 19.200
 #define UBBRVAL 51
 
-uint8_t receive_once();
 
 void uart_init() {
     // set the baud rate
@@ -30,7 +29,28 @@ void transmit(uint8_t data) {
     UDR0 = data;
 }
 
-uint8_t receive() {
-    loop_until_bit_is_set(UCSR0A,RXC0); // dit kan een tijdje duren, of zelfs oneindig!
-    return UDR0;
+// Handel commando's af
+void process_serial() {
+    if(UCSR0A & (1 << RXC0)) {
+        uint8_t received_byte = UDR0;
+        switch (received_byte) {
+            case 0x01: // oprollen
+            oprollen();
+            break;
+            case 0x02: // uitrollen
+            uitrollen();
+            break;
+            case 0x03: // Stop met rollen
+            stop_rollen();
+            break;
+            case 0x04:
+            set_temperature_mode();
+            break;
+            case 0x05:
+            set_light_mode();
+            break;
+            //case 0x06:
+            // code hier
+        }
+    }
 }

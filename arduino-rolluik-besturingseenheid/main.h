@@ -21,7 +21,17 @@ void SCH_Dispatch_Tasks(void);
 unsigned char SCH_Add_Task(void (*)(void), const unsigned int, const unsigned int);
 unsigned char SCH_Delete_Task(const unsigned char);
 
-// rolluik functies
+// Globale variabelen
+uint8_t rolluik_status = 0;
+int8_t send_index = -1;
+float temperaturevalues[5] = { 0, 0, 0, 0, 0 };
+uint8_t lightvalues[5] = { 0, 0, 0, 0, 0 };
+
+// Adc
+void init_adc();
+uint8_t get_adc_value(uint8_t pin);
+
+// Rolluik
 void init_rolluik();
 void oprollen();
 void uitrollen();
@@ -29,14 +39,18 @@ void toggle_status_led();
 void stop_rollen();
 void start_rollen();
 
+// Mode
+void set_light_mode();
+void set_temperature_mode();
+void send_light_info();
+void send_temperature_info();
+
 // Serial functies
 void process_serial();
 
 // Temperatuur functies
 void init_temperatuur();
-void send_temperature_info();
 float get_temperatuur();
-void set_temperature_mode();
 
 // Afstand functies
 void init_distance_sensor();
@@ -45,7 +59,6 @@ void check_distance();
 // Lichtintensiteit functies
 void check_light_intensity();
 uint8_t get_light();
-void set_light_mode();
 
 // Overige functies
 float calculate_uint8_average(uint8_t array[], uint8_t len);

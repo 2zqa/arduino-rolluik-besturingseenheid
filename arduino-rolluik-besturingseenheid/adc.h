@@ -1,13 +1,3 @@
-/*
- * adc.h
- *
- * Initialiseer en lees van analoge poorten
- *
- *  Author: school
- */ 
-void init_adc();
-uint8_t get_adc_value(uint8_t pin);
-
 void init_adc() {
     // Source: https://medium.com/@jrejaud/arduino-to-avr-c-reference-guide-7d113b4309f7
     // 16Mhz / 128 = 125kHz ADC reference clock
