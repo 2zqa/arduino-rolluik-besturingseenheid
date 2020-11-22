@@ -47,6 +47,8 @@ void send_temperature_info();
 
 // Serial functies
 void process_serial();
+void handle_double_command(uint8_t previous_byte, uint8_t received_byte);
+void handle_single_command(uint8_t received_byte);
 
 // Temperatuur functies
 void init_temperatuur();
