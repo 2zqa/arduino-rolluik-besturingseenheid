@@ -27,6 +27,16 @@ int8_t send_index = -1;
 float temperaturevalues[5] = { 0, 0, 0, 0, 0 };
 uint8_t lightvalues[5] = { 0, 0, 0, 0, 0 };
 
+// Autonomy
+uint8_t maximum_distance = 100;
+uint8_t minimum_distance = 2;
+
+uint8_t maximum_light_intensity = 200;
+uint8_t minimum_light_intensity = 100;
+
+int8_t maximum_temperature = 25;
+int8_t minimum_temperature = 15;
+
 // Adc
 void init_adc();
 uint8_t get_adc_value(uint8_t pin);

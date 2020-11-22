@@ -6,7 +6,7 @@
 #include "mijn_serial.h"
 #include "adc.h"
 #include "afstand.h"
-#include "autonomous.h"
+#include "autonomy.h"
 #include "mode.h"
 
 // The array of tasks
@@ -232,20 +232,17 @@ ISR(TIMER0_COMPA_vect)
 // ------------------------------------------------------------------
 
 void check_temperature() {
-	//uint8_t tijdelijke_temperatuur = 30; // later: afstand = get_distance();
-	
-	if (get_temperatuur() > maximum_temperature && status_index == -1)
-	{
+	uint8_t temperatuur = get_temperatuur();
+	if (temperatuur > maximum_temperature && status_index == -1) {
 		uitrollen();
-	} else if (get_temperatuur() < minimum_temperature && status_index == -1) {
+	} else if (temperatuur < minimum_temperature && status_index == -1) {
 		oprollen();
 	}
 }
 
-
-
+// Rolt automatisch rolluik in of uit. TODO: wanneer autonome modus is ingeschakeld
 void check_light_intensity(){
-	uint8_t lichtmeetwaarde = get_light(); // later: lichtintensiteit = get_lightintensity();
+	uint8_t lichtmeetwaarde = get_light();
 	if (lichtmeetwaarde > maximum_light_intensity && status_index == -1) {
 		uitrollen();
 	} else if (lichtmeetwaarde < minimum_light_intensity && status_index == -1) {
@@ -270,7 +267,7 @@ int main()
     // Taken
     SCH_Add_Task(process_serial,0,1); // commando's uitvoeren: oprollen, etc
     SCH_Add_Task(check_distance,0,1);
-	SCH_Add_Task(check_light_intensity,0,300); // 300??
+	SCH_Add_Task(check_light_intensity,0,250);
  	send_index = SCH_Add_Task(add_light,0,750); // TODO: 0 toevoegen aan period
  	mode_index = SCH_Add_Task(send_light_info,0,1500); // TODO: 0 toevoegen aan period
 

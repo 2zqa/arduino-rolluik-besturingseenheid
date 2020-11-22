@@ -139,7 +139,7 @@
     <Compile Include="afstand.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="autonomous.h">
+    <Compile Include="autonomy.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="main.c">
