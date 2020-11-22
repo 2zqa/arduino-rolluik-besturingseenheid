@@ -24,8 +24,10 @@ unsigned char SCH_Delete_Task(const unsigned char);
 // Globale variabelen
 uint8_t rolluik_status = 0;
 int8_t send_index = -1;
-float temperaturevalues[5] = { 0, 0, 0, 0, 0 };
-uint8_t lightvalues[5] = { 0, 0, 0, 0, 0 };
+float temperaturevalues[5] = { 0 };
+uint8_t temperature_count = 0;
+uint8_t lightvalues[5] = { 0 };
+uint8_t light_count = 0;
 
 // Autonomy
 uint8_t maximum_distance = 100;
@@ -73,10 +75,10 @@ void check_light_intensity();
 uint8_t get_light();
 
 // Overige functies
-float calculate_uint8_average(uint8_t array[], uint8_t len);
-float calculate_float_average(float array[], uint8_t len);
-void add_uint8_to_array(uint8_t waarde, uint8_t array[], uint8_t len);
-void add_float_to_array(float waarde, float array[], uint8_t len);
+float calculate_uint8_average(uint8_t array[], uint8_t len, uint8_t counter);
+float calculate_float_average(float array[], uint8_t len, uint8_t counter);
+void add_uint8_to_array(uint8_t waarde, uint8_t array[], uint8_t len, uint8_t *counter);
+void add_float_to_array(float waarde, float array[], uint8_t len, uint8_t *counter);
 
 // hier het aantal taken aanpassen ....!!
 // Maximum number of tasks

@@ -92,10 +92,10 @@ void process_serial() {
         uint8_t received_byte = UDR0;
         if(previous_byte >= 0x07 && previous_byte <= 0x0C) {
             handle_double_command(previous_byte, received_byte);
+            previous_byte = 0;
         } else {
             handle_single_command(received_byte);
+            previous_byte = UDR0;
         }
-
-        previous_byte = UDR0;
     }
 }

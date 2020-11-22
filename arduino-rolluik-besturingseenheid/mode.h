@@ -18,10 +18,10 @@ void set_light_mode() {
 
 // Temperatuurmodus
 void send_temperature_info() {
-    transmit_data(calculate_float_average(temperaturevalues,5));
+    transmit_data(calculate_float_average(temperaturevalues,5,temperature_count));
 }
 
 // Lichtmodus
 void send_light_info() {
-    transmit_data(calculate_uint8_average(lightvalues,5));
+    transmit_data(calculate_uint8_average(lightvalues,5,light_count));
 }
