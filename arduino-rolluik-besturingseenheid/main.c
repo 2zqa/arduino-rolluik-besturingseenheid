@@ -271,9 +271,11 @@ int main()
     SCH_Add_Task(process_serial,0,1); // commando's uitvoeren: oprollen, etc
     SCH_Add_Task(check_distance,0,1);
 	SCH_Add_Task(check_light_intensity,0,300); // 300??
- 	send_index = SCH_Add_Task(add_light,0,750); // TODO: 0 toevoegen aan period
- 	mode_index = SCH_Add_Task(send_light_info,0,1500); // TODO: 0 toevoegen aan period
+ 	//send_index = SCH_Add_Task(add_light,0,750); // TODO: 0 toevoegen aan period
+ 	//mode_index = SCH_Add_Task(send_light_info,0,1500); // TODO: 0 toevoegen aan period
 
+ 	//send_index = SCH_Add_Task(add_temperature,0,750); // TODO: 0 toevoegen aan period
+ 	//mode_index = SCH_Add_Task(send_temperature_info,0,1500); // TODO: 0 toevoegen aan period
     // Handel taken af
     while (1) {
         SCH_Dispatch_Tasks();
