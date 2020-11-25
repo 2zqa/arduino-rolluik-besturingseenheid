@@ -9,9 +9,6 @@ void set_temperature_mode(){
 	if (send_index > -1) {
 		SCH_Delete_Task(send_index); // Stop met sturen van temperatuurdata
 	}
-    if (check_data_index != -1) {
-        SCH_Delete_Task(check_data_index);
-    }
     mode = 1;
 
     mode_index = SCH_Add_Task(add_temperature,0,1000); // TODO: 0 toevoegen aan period

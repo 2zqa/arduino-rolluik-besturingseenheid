@@ -37,14 +37,14 @@ void check_temperature();
 void check_light_intensity();
 void check_distance();
 void check_data();
-uint8_t maximum_distance = 100;
-uint8_t minimum_distance = 2;
+uint8_t maximum_distance = 20;
+uint8_t minimum_distance = 8;
 
 uint8_t maximum_light_intensity = 200;
-uint8_t minimum_light_intensity = 10;
+uint8_t minimum_light_intensity = 50;
 
 int8_t maximum_temperature = 25;
-int8_t minimum_temperature = 15;
+int8_t minimum_temperature = 18;
 
 // Adc
 void init_adc();
