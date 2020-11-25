@@ -57,8 +57,14 @@ void handle_single_command(uint8_t received_byte) {
         case 0x05:
             set_light_mode();
             break;
-//         case 0x06:
-//             code hier
+        case 0x0D:
+            check_data_index = SCH_Add_Task(check_data,0,1); // controleer variabelen en stuur autonoom rolluik aan
+            break;
+        case 0x0E:
+            if (check_data_index != -1) {
+                SCH_Delete_Task(check_data_index);
+            }
+            break;
     }
 }
 
@@ -95,7 +101,34 @@ void process_serial() {
             previous_byte = 0;
         } else {
             handle_single_command(received_byte);
-            previous_byte = UDR0;
+            previous_byte = received_byte;
         }
     }
+}
+
+// TODO: verwijder debug functie
+char digits[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
+char buffer [33];
+char message[] = "Afstand: ";
+char message2[] = "cm. Rolluik status: ";
+char buffer2[33];
+
+void debug_send_distance() {
+//     itoa ((int)get_distance(),buffer,10);
+//     itoa (rolluik_status,buffer2,10);
+//     for (int i = 0; message[i] != 0; i++){
+//         transmit(message[i]);
+//     }
+//     for (int i = 0; buffer[i] != 0; i++){
+//         transmit(buffer[i]);
+//     }
+//     
+//     
+//     for (int i = 0; message2[i] != 0; i++){
+//         transmit(message2[i]);
+//     }
+//     transmit(buffer2[0]);
+//     transmit(0x0a); // newline
+//     transmit(0x0d);
+    transmit(get_light());
 }

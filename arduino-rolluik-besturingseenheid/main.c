@@ -2,10 +2,10 @@
 #include <avr/interrupt.h>
 #include "main.h"
 #include "util.h"
+#include "afstand.h"
 #include "rolluik.h"
 #include "mijn_serial.h"
 #include "adc.h"
-#include "afstand.h"
 #include "autonomy.h"
 #include "mode.h"
 
@@ -231,25 +231,6 @@ ISR(TIMER0_COMPA_vect)
 
 // ------------------------------------------------------------------
 
-void check_temperature() {
-	uint8_t temperatuur = get_temperatuur();
-	if (temperatuur > maximum_temperature && status_index == -1) {
-		uitrollen();
-	} else if (temperatuur < minimum_temperature && status_index == -1) {
-		oprollen();
-	}
-}
-
-// Rolt automatisch rolluik in of uit. TODO: wanneer autonome modus is ingeschakeld
-void check_light_intensity(){
-	uint8_t lichtmeetwaarde = get_light();
-	if (lichtmeetwaarde > maximum_light_intensity && status_index == -1) {
-		uitrollen();
-	} else if (lichtmeetwaarde < minimum_light_intensity && status_index == -1) {
-		oprollen();
-	}
-}
-
 int main()
 {
     // Inits
@@ -266,9 +247,13 @@ int main()
     
     // Taken
     SCH_Add_Task(process_serial,0,1); // commando's uitvoeren: oprollen, etc
-    SCH_Add_Task(check_distance,0,1);
-	SCH_Add_Task(check_light_intensity,0,250);
-
+    
+    // standaard autonoom op/uitrollen gebaseerd op temperatuur en afstand
+    check_data_index = SCH_Add_Task(check_data,0,1);
+    
+    // TODO: verdwijder debug
+    SCH_Add_Task(debug_send_distance,0,125);
+    
     // Handel taken af
     while (1) {
         SCH_Dispatch_Tasks();

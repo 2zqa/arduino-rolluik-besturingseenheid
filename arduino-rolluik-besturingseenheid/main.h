@@ -24,12 +24,19 @@ unsigned char SCH_Delete_Task(const unsigned char);
 // Globale variabelen
 uint8_t rolluik_status = 0;
 int8_t send_index = -1;
+int8_t check_data_index = -1; // scheduler index voor controleren van temperatuur of lichtdata voor autonomie
+int8_t check_distance_index = -1; // scheduler index voor controleren afstand
 float temperaturevalues[5] = { 0 };
 uint8_t temperature_count = 0;
 uint8_t lightvalues[5] = { 0 };
 uint8_t light_count = 0;
+uint8_t mode = 1; // 0 = lichtmodus, 1 = temperatuurmodus
 
 // Autonomy
+void check_temperature();
+void check_light_intensity();
+void check_distance();
+void check_data();
 uint8_t maximum_distance = 100;
 uint8_t minimum_distance = 2;
 
@@ -68,10 +75,8 @@ float get_temperatuur();
 
 // Afstand functies
 void init_distance_sensor();
-void check_distance();
 
 // Lichtintensiteit functies
-void check_light_intensity();
 uint8_t get_light();
 
 // Overige functies
@@ -83,4 +88,4 @@ void add_float_to_array(float waarde, float array[], uint8_t len, uint8_t *count
 // hier het aantal taken aanpassen ....!!
 // Maximum number of tasks
 
-#define SCH_MAX_TASKS (6)
+#define SCH_MAX_TASKS (10) // TODO: terugzetten naar juiste waarde (6? tel alle SCH_ADD_TASKs)

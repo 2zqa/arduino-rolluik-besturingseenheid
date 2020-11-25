@@ -9,14 +9,14 @@ void init_rolluik() {
 
 // Schakelt groene lampje in
 void oprollen() {
-	rolluik_status = 3;
+	rolluik_status = 3; // bezig met oprollen
     PORTB = (1 << 0);
 	start_rollen();
 }
 
 // Schakelt rode lampje in
 void uitrollen() {
-	rolluik_status = 3;
+	rolluik_status = 2; // bezig met uitrollen
     PORTB = (1 << 1);
 	start_rollen();
 }

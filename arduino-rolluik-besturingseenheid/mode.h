@@ -1,31 +1,33 @@
 // Variabelen
 int8_t mode_index = -1;
 
-
 void set_temperature_mode(){
-	if (mode_index > -1)
-	{
-	    SCH_Delete_Task(mode_index); // Stop met sturen van temperatuurdata
+    // Verwijder andere add- en send-functies
+    if (mode_index > -1) {
+	    SCH_Delete_Task(mode_index); // Stop met meten van temperatuur (voor gemiddelden, niet autonomie)
 	}
-	if (send_index > -1)
-	{
-		SCH_Delete_Task(send_index);
+	if (send_index > -1) {
+		SCH_Delete_Task(send_index); // Stop met sturen van temperatuurdata
 	}
-    send_index = SCH_Add_Task(add_temperature,0,1000); // TODO: 0 toevoegen aan period
-    mode_index = SCH_Add_Task(send_temperature_info,0,1500); // Start met sturen van temperatuurdata // TODO: 0 toevoegen aan period
+    if (check_data_index != -1) {
+        SCH_Delete_Task(check_data_index);
+    }
+    mode = 1;
+
+    mode_index = SCH_Add_Task(add_temperature,0,1000); // TODO: 0 toevoegen aan period
+    send_index = SCH_Add_Task(send_temperature_info,0,1500); // Start met sturen van temperatuurdata // TODO: 0 toevoegen aan period
 }
 
 void set_light_mode() {
-	if (mode_index > -1)
-	{
-		SCH_Delete_Task(mode_index); // Stop met sturen van lichtdata
-	}
-	if (send_index > -1)
-	{
-		SCH_Delete_Task(send_index);
-	}
-    send_index = SCH_Add_Task(add_light,0,750); // TODO: 0 toevoegen aan period
-    mode_index = SCH_Add_Task(send_light_info,0,1500); // Start met sturen van lichtdata  // TODO: 0 toevoegen aan period
+    if (mode_index > -1) {
+        SCH_Delete_Task(mode_index); // Stop met meten van temperatuur (voor gemiddelden, niet autonomie)
+    }
+    if (send_index > -1) {
+        SCH_Delete_Task(send_index); // Stop met sturen van temperatuurdata
+    }
+    mode = 0;
+    mode_index = SCH_Add_Task(add_light,0,750); // TODO: 0 toevoegen aan period
+    send_index = SCH_Add_Task(send_light_info,0,1500); // Start met sturen van lichtdata  // TODO: 0 toevoegen aan period
 }
 
 // Temperatuurmodus
