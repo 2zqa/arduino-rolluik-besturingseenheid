@@ -252,7 +252,7 @@ int main()
     check_data_index = SCH_Add_Task(check_data,0,1);
     
     // TODO: verdwijder debug
-    SCH_Add_Task(debug_send_distance,0,125);
+    //SCH_Add_Task(debug_send_distance,0,125);
     
     // Handel taken af
     while (1) {

@@ -1,5 +1,5 @@
 void check_data() {
-    check_distance();
+
     switch (mode)
     {
         case 0: // lichtmodus
@@ -9,6 +9,7 @@ void check_data() {
             check_temperature();
     	    break;
     }
+    check_distance();
 }
 
 // Stop automatisch rollen gebaseerd op afstand van rolluik
@@ -30,7 +31,7 @@ void check_temperature() {
 	uint8_t temperatuur = get_temperatuur();
 	if (temperatuur > maximum_temperature && status_index == -1) {
 		uitrollen();
-    } else if (temperatuur < minimum_temperature && status_index == -1) {
+    } else if (temperatuur < minimum_temperature && status_index == -1) { // te koud, rol luik op (zodat zon binnenkomt)
 		oprollen();
 	}
 }
@@ -54,5 +55,6 @@ void set_autonomously() {
 void unset_autonomously() {
     if (check_data_index != -1) {
         SCH_Delete_Task(check_data_index);
+        check_data_index = -1;
     }
 }

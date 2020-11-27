@@ -128,5 +128,5 @@ void debug_send_distance() {
 //     transmit(buffer2[0]);
 //     transmit(0x0a); // newline
 //     transmit(0x0d);
-    transmit(get_light());
+    transmit((uint8_t)get_temperatuur());
 }
