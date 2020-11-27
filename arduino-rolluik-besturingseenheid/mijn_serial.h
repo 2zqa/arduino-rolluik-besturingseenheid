@@ -58,12 +58,10 @@ void handle_single_command(uint8_t received_byte) {
             set_light_mode();
             break;
         case 0x0D:
-            check_data_index = SCH_Add_Task(check_data,0,1); // controleer variabelen en stuur autonoom rolluik aan
+            set_autonomously();
             break;
         case 0x0E:
-            if (check_data_index != -1) {
-                SCH_Delete_Task(check_data_index);
-            }
+            unset_autonomously();
             break;
     }
 }

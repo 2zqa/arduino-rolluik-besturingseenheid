@@ -37,6 +37,8 @@ void check_temperature();
 void check_light_intensity();
 void check_distance();
 void check_data();
+void set_autonomously();
+void unset_autonomously();
 uint8_t maximum_distance = 20;
 uint8_t minimum_distance = 8;
 

@@ -44,3 +44,15 @@ void check_light_intensity(){
 		oprollen();
 	}
 }
+
+void set_autonomously() {
+    if(check_data_index == -1) {
+        check_data_index = SCH_Add_Task(check_data,0,1); // controleer variabelen en stuur autonoom rolluik aan
+    }
+}
+
+void unset_autonomously() {
+    if (check_data_index != -1) {
+        SCH_Delete_Task(check_data_index);
+    }
+}
