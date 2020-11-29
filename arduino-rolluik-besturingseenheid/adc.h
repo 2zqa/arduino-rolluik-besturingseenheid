@@ -1,3 +1,9 @@
+/*
+ * adc.h
+ *
+ * Author: Jordan Réjaud, KEHT
+ */
+
 void init_adc() {
     // Source: https://medium.com/@jrejaud/arduino-to-avr-c-reference-guide-7d113b4309f7
     // 16Mhz / 128 = 125kHz ADC reference clock

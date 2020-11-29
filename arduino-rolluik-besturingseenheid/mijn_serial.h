@@ -1,3 +1,9 @@
+/*
+ * mijn_serial.h
+ *
+ * Author: KEHT, Marijn Kok, Haylee Drenth
+ */
+
 #include <avr/io.h>
 #include <stdlib.h>
 #include <avr/sfr_defs.h>
@@ -102,31 +108,4 @@ void process_serial() {
             previous_byte = received_byte;
         }
     }
-}
-
-// TODO: verwijder debug functie
-char digits[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
-char buffer [33];
-char message[] = "Afstand: ";
-char message2[] = "cm. Rolluik status: ";
-char buffer2[33];
-
-void debug_send_distance() {
-//     itoa ((int)get_distance(),buffer,10);
-//     itoa (rolluik_status,buffer2,10);
-//     for (int i = 0; message[i] != 0; i++){
-//         transmit(message[i]);
-//     }
-//     for (int i = 0; buffer[i] != 0; i++){
-//         transmit(buffer[i]);
-//     }
-//     
-//     
-//     for (int i = 0; message2[i] != 0; i++){
-//         transmit(message2[i]);
-//     }
-//     transmit(buffer2[0]);
-//     transmit(0x0a); // newline
-//     transmit(0x0d);
-    transmit((uint8_t)get_temperatuur());
 }

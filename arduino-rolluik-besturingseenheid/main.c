@@ -1,3 +1,9 @@
+/*
+ * main.c
+ *
+ * Author: Onbekend (AVR_TTC_scheduler/basiscode), Marijn Kok, Haylee Drenth
+ */
+
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include "main.h"
@@ -250,10 +256,7 @@ int main()
     
     // standaard autonoom op/uitrollen gebaseerd op temperatuur en afstand
     check_data_index = SCH_Add_Task(check_data,0,1);
-    
-    // TODO: verdwijder debug
-    //SCH_Add_Task(debug_send_distance,0,125);
-    
+
     // Handel taken af
     while (1) {
         SCH_Dispatch_Tasks();

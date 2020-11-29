@@ -1,11 +1,8 @@
 /*
- * distance.h
+ * afstand.h
  *
- * meausers distance betwee 2 and 400+ cm
- *
- * Created: 29-6-2016 14:44:43
- *  Author: jacob / 400+ cm fix KEHT
- */ 
+ * Author: jacob, KEHT, Marijn Kok, Haylee Drenth
+ */
 
 /* 
  * HC-SR04

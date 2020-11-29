@@ -1,3 +1,9 @@
+/*
+ * rolluik.h
+ *
+ * Author: Marijn Kok, Haylee Drenth
+ */
+
 // Variabelen
 int8_t status_index = -1;
 
@@ -9,16 +15,20 @@ void init_rolluik() {
 
 // Schakelt groene lampje in
 void oprollen() {
-	rolluik_status = 3; // bezig met oprollen, lampje wordt ROOD
-    PORTB = (1 << 0);
-	start_rollen();
+    if(rolluik_status != OPGEROLD  && status_index == -1) { // als het nog niet volledig is opgerold
+	    rolluik_status = BEZIG_MET_OPROLLEN; // lampje wordt ROOD
+        PORTB = (1 << 0);
+	    start_rollen();
+    }        
 }
 
 // Schakelt rode lampje in
 void uitrollen() {
-	rolluik_status = 2; // bezig met uitrollen, lampje wordt GROEN
-    PORTB = (1 << 1);
-	start_rollen();
+    if(rolluik_status != UITGEROLD  && status_index == -1) { // als het nog niet volledig is uitgerold
+	    rolluik_status = BEZIG_MET_UITROLLEN; // bezig met uitrollen, lampje wordt GROEN
+        PORTB = (1 << 1);
+	    start_rollen();
+    }        
 }
 
 // Laat gele lampje knipperen
@@ -41,5 +51,14 @@ void stop_rollen() {
         SCH_Delete_Task(status_index);
         status_index = -1;
         PORTB &= ~(1 << 2);
+        
+        switch(rolluik_status) {
+            case BEZIG_MET_UITROLLEN:
+                rolluik_status = UITGEROLD;
+                break;
+            case BEZIG_MET_OPROLLEN:
+                rolluik_status = OPGEROLD;
+                break;
+        }
     }
 }

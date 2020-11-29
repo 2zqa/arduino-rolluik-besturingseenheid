@@ -1,3 +1,9 @@
+/*
+ * mode.h
+ *
+ * Author: Marijn Kok, Haylee Drenth
+ */
+
 // Variabelen
 int8_t mode_index = -1;
 
@@ -11,8 +17,8 @@ void set_temperature_mode(){
 	}
     mode = 1;
 
-    mode_index = SCH_Add_Task(add_temperature,0,1000); // TODO: 0 toevoegen aan period
-    send_index = SCH_Add_Task(send_temperature_info,0,1500); // Start met sturen van temperatuurdata // TODO: 0 toevoegen aan period
+    mode_index = SCH_Add_Task(add_temperature,0,10000); // 10000 * 4ms = 40s
+    send_index = SCH_Add_Task(send_temperature_info,0,15000); // 15000 * 4ms = 60s
 }
 
 void set_light_mode() {
@@ -23,8 +29,8 @@ void set_light_mode() {
         SCH_Delete_Task(send_index); // Stop met sturen van temperatuurdata
     }
     mode = 0;
-    mode_index = SCH_Add_Task(add_light,0,750); // TODO: 0 toevoegen aan period
-    send_index = SCH_Add_Task(send_light_info,0,1500); // Start met sturen van lichtdata  // TODO: 0 toevoegen aan period
+    mode_index = SCH_Add_Task(add_light,0,7500); // 7500 * 4ms = 30s
+    send_index = SCH_Add_Task(send_light_info,0,15000); // 15000 * 4ms = 60s
 }
 
 // Temperatuurmodus

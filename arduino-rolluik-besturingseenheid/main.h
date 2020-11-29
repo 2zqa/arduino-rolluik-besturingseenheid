@@ -1,3 +1,9 @@
+/*
+ * main.c
+ *
+ * Author: Onbekend (AVR_TTC_scheduler/basiscode), Marijn Kok, Haylee Drenth
+ */
+
 // Scheduler data structure for storing task data
 typedef struct
 {
@@ -31,6 +37,10 @@ uint8_t temperature_count = 0;
 uint8_t lightvalues[5] = { 0 };
 uint8_t light_count = 0;
 uint8_t mode = 1; // 0 = lichtmodus, 1 = temperatuurmodus
+#define UITGEROLD 0 // afstand is HOOG
+#define OPGEROLD 1 // afstand is LAAG
+#define BEZIG_MET_UITROLLEN 2 // afstand wordt GROTER
+#define BEZIG_MET_OPROLLEN 3 // afstand wordt KLEINER
 
 // Autonomy
 void check_temperature();
@@ -87,7 +97,5 @@ float calculate_float_average(float array[], uint8_t len, uint8_t counter);
 void add_uint8_to_array(uint8_t waarde, uint8_t array[], uint8_t len, uint8_t *counter);
 void add_float_to_array(float waarde, float array[], uint8_t len, uint8_t *counter);
 
-// hier het aantal taken aanpassen ....!!
 // Maximum number of tasks
-
-#define SCH_MAX_TASKS (10) // TODO: terugzetten naar juiste waarde (6? tel alle SCH_ADD_TASKs)
+#define SCH_MAX_TASKS (6) // process_serial, check_data, toggle_status_led, (add_temperature+send_temperature OF add_light+send_light_info, ofwel 2) maakt 5. +1 voor margin

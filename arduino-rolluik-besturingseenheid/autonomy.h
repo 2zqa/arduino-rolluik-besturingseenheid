@@ -1,5 +1,10 @@
-void check_data() {
+/*
+ * autonomy.h
+ *
+ * Author: Marijn Kok, Haylee Drenth
+ */
 
+void check_data() {
     switch (mode)
     {
         case 0: // lichtmodus
@@ -16,22 +21,19 @@ void check_data() {
 void check_distance() {
     uint8_t meetwaarde = get_distance();
     
-    if (meetwaarde > maximum_distance && status_index != -1 && rolluik_status == 3) // Wanneer maximumafstand overschreden is en het lampje knippert
-    {
+    if (meetwaarde > maximum_distance && rolluik_status == BEZIG_MET_UITROLLEN) { // Wanneer rolluik ver genoeg is uitgerold (en bezig was met uitrollen) (afstand HOOG)
         stop_rollen();
-        rolluik_status = 1; // uitgerold (blokkeert zon)
-    } else if (meetwaarde < minimum_distance && status_index != -1 && rolluik_status == 2) { // Wanneer minimumafstand overschreden is en het lampje knippert
+    } else if (meetwaarde < minimum_distance && rolluik_status == BEZIG_MET_OPROLLEN) { // Wanneer rolluik ver genoeg is opgerold (en bezig was met oprollen) (afstand LAAG)
         stop_rollen();
-        rolluik_status = 0; // opgerold (zon komt binnen)
     }
 }
 
 // Start automatisch rollen gebaseerd op temperatuur
 void check_temperature() {
 	uint8_t temperatuur = get_temperatuur();
-	if (temperatuur > maximum_temperature && status_index == -1) {
+	if (temperatuur > maximum_temperature) {
 		uitrollen();
-    } else if (temperatuur < minimum_temperature && status_index == -1) { // te koud, rol luik op (zodat zon binnenkomt)
+    } else if (temperatuur < minimum_temperature) {
 		oprollen();
 	}
 }
@@ -39,9 +41,9 @@ void check_temperature() {
 // Rolt automatisch rolluik in of uit gebaseerd op licht
 void check_light_intensity(){
 	uint8_t lichtmeetwaarde = get_light();
-	if (lichtmeetwaarde > maximum_light_intensity && status_index == -1 && rolluik_status != 4 && rolluik_status != 2) { // wanneer het te licht is, maak het donker. Kan niet wanneer het uitrolt/is uitgerold
+	if (lichtmeetwaarde > maximum_light_intensity && status_index == -1) { // wanneer het te licht is, maak het donker. Kan niet wanneer het uitrolt/is uitgerold
 		uitrollen();
-    } else if (lichtmeetwaarde < minimum_light_intensity && status_index == -1 && rolluik_status != 3 && rolluik_status != 1) { // wanneer het te donker is, maak het lichter. Kan niet wanneer het oprolt/is opgerold
+    } else if (lichtmeetwaarde < minimum_light_intensity && status_index == -1) { // wanneer het te donker is, maak het lichter. Kan niet wanneer het oprolt/is opgerold
 		oprollen();
 	}
 }

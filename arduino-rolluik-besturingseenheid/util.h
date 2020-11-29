@@ -1,3 +1,9 @@
+/*
+ * util.h
+ *
+ * Author: Marijn Kok, Haylee Drenth
+ */
+
 float get_temperatuur() {
     return 0.48828125*get_adc_value(0)-50;
 }
