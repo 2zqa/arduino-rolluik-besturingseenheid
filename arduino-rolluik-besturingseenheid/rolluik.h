@@ -15,7 +15,7 @@ void init_rolluik() {
 
 // Schakelt groene lampje in
 void oprollen() {
-    if(rolluik_status != OPGEROLD  && status_index == -1) { // als het nog niet volledig is opgerold
+    if(rolluik_status != OPGEROLD) { // als het nog niet volledig is opgerold
 	    rolluik_status = BEZIG_MET_OPROLLEN; // lampje wordt ROOD
         PORTB = (1 << 0);
 	    start_rollen();
@@ -24,7 +24,7 @@ void oprollen() {
 
 // Schakelt rode lampje in
 void uitrollen() {
-    if(rolluik_status != UITGEROLD  && status_index == -1) { // als het nog niet volledig is uitgerold
+    if(rolluik_status != UITGEROLD) { // als het nog niet volledig is uitgerold
 	    rolluik_status = BEZIG_MET_UITROLLEN; // bezig met uitrollen, lampje wordt GROEN
         PORTB = (1 << 1);
 	    start_rollen();
